@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
 import * as Animatable from 'react-native-animatable';
@@ -18,7 +18,7 @@ const HomeApp = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://192.168.1.18:5000/api/coleta/ObterColetas/${user.Cadastrarid}`);
+      const response = await fetch(`http://192.168.1.84:5000/api/coleta/ObterColetas/${user.Cadastrarid}`);
       if (response.ok) {
         const data = await response.json();
         // Ordenar coletas em ordem decrescente de data
@@ -63,7 +63,8 @@ const HomeApp = () => {
       <View style={styles.header}>
         <Text style={styles.headerText}>Olá, {user.Nome}</Text>
       </View>
-      <ScrollView style={styles.containerSection}>
+      
+      <ScrollView>
         <View style={styles.sectionHeader}>
           <Icon name="clock-o" size={24} color="#0F334D" />
           <Text style={styles.sectionTitle}>Últimas coletas realizadas</Text>
@@ -83,7 +84,10 @@ const HomeApp = () => {
           <Icon name="arrow-right" size={16} color="#0F334D" />
         </TouchableOpacity>
       </ScrollView>
-
+      <View style={styles.sustainabilityContainer}>
+        <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+        <Text style={styles.sustainabilityText}>Pratique a sustentabilidade, recicle sempre!</Text>
+      </View>
       <View style={styles.bottomBar}>
         <TouchableOpacity style={styles.iconButton}>
           <Icon name="home" size={26} color="#0F334D" />
@@ -105,7 +109,6 @@ const HomeApp = () => {
           <Text style={styles.iconText}>Perfil</Text>
         </TouchableOpacity>
       </View>
-
       {showAdditionalIcons && (
         <Animatable.View animation="slideInUp" style={styles.additionalIconsContainer}>
           <TouchableOpacity style={[styles.additionalIconButton, { backgroundColor: '#F0B828' }]} onPress={() => navigation.navigate('RegistroColetaReciclavel')}>
@@ -128,17 +131,35 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 40, // Increase padding to move the header down
     justifyContent: 'space-between',
   },
   header: {
     alignItems: 'center',
+    marginBottom: 20, // Increase margin to move the header down
   },
   headerText: {
     fontFamily: 'Montserrat_700Bold',
     fontSize: 18,
     color: '#0F334D',
+  },
+  sustainabilityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E0F7FA',
+    borderRadius: 10,
+    padding: 10,
     marginBottom: 20,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+  },
+  sustainabilityText: {
+    fontFamily: 'Montserrat_700Bold',
+    fontSize: 14,
+    color: '#0F334D',
   },
   containerSection: {
     backgroundColor: '#F0F0F0',
@@ -164,20 +185,22 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   coletaText: {
-    fontFamily: 'Montserrat_400Regular',
+    fontFamily: 'Montserrat_700Bold',
     fontSize: 14,
     color: '#0F334D',
     flex: 1,
   },
   coletaQuantidade: {
-    fontFamily: 'Montserrat_700Bold',
+    fontFamily: 'Montserrat_400Regular',
+    fontSize: 14,
+    color: '#7F7F7F',
     textAlign: 'right',
   },
   verHistoricoButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end', // Align to the right
     marginTop: 20,
-    justifyContent: 'center',
   },
   verHistoricoText: {
     fontFamily: 'Montserrat_700Bold',

@@ -21,6 +21,7 @@ import Termos from '../screens/Termos.js';
 import Politica from '../screens/Politica.js';
 import GerarRelatorios from '../screens/GerarRelatorios.js';
 import Historico from '../screens/Historico.js';
+import EditarColeta from '../screens/EditarColeta.js';
 
 const Stack = createStackNavigator();
 
@@ -48,6 +49,7 @@ const Navigation = () => {
         <Stack.Screen name="Termos" component={Termos}/>
         <Stack.Screen name="GerarRelatorios" component={GerarRelatorios}/>
         <Stack.Screen name="Historico" component={Historico}/>
+        <Stack.Screen name="EditarColeta" component={EditarColeta}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -15,6 +15,8 @@ const Opcoes = () => {
     return null;
   }
 
+  console.log("Valor de user:", user); // Adiciona um log para verificar o valor de user
+
   const handleBack = () => {
     navigation.goBack(); // Função para retornar à tela anterior
   };
@@ -23,6 +25,10 @@ const Opcoes = () => {
     logout();
     navigation.replace('Login'); // Redireciona para a tela de login
   };
+
+  // Adiciona verificação para Cadastrarid
+  const Cadastrarid = user ? user.Cadastrarid : null;
+  console.log("Valor de Cadastrarid:", Cadastrarid);
 
   return (
     <View style={styles.container}>
@@ -60,10 +66,13 @@ const Opcoes = () => {
           <Text style={styles.optionText}>Termos de uso</Text>
           <Icon name="chevron-right" size={16} color="#0F334D" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionItem} onPress={handleLogout}>
-          <Text style={styles.optionText}>Sair</Text>
-          <Icon name="chevron-right" size={16} color="#0F334D" />
-        </TouchableOpacity>
+        {/* Usando Cadastrarid somente se user não for nulo */}
+        {user && (
+          <TouchableOpacity style={styles.optionItem} onPress={handleLogout}>
+            <Text style={styles.optionText}>Sair</Text>
+            <Icon name="chevron-right" size={16} color="#0F334D" />
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </View>
   );

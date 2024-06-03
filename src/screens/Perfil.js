@@ -22,7 +22,7 @@ const Perfil = () => {
   const fetchUserData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://192.168.1.18:5000/api/auth/user/${user.Cadastrarid}`, {
+      const response = await axios.get(`http://192.168.1.84:5000/api/auth/user/${user.Cadastrarid}`, {
         headers: {
           Authorization: `Bearer ${user.Token}`
         }
@@ -45,7 +45,7 @@ const Perfil = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await axios.put(`http://192.168.1.18:5000/api/auth/user/${user.Cadastrarid}`, {
+      await axios.put(`http://192.168.1.84:5000/api/auth/user/${user.Cadastrarid}`, {
         Nome: nome,
         Telefone: telefone,
         Email: email,

@@ -34,8 +34,8 @@ const Relatorios = () => {
     const fetchData = async () => {
       try {
         const endpoint = user.Email === 'kaiqueeduardo1407@gmail.com'
-          ? 'http://192.168.1.18:5000/api/coleta/ObterTodasColetas'
-          : `http://192.168.1.18:5000/api/coleta/ObterColetas/${user.Cadastrarid}`;
+          ? 'http://192.168.1.84:5000/api/coleta/ObterTodasColetas'
+          : `http://192.168.1.84:5000/api/coleta/ObterColetas/${user.Cadastrarid}`;
   
         const response = await fetch(endpoint);
         if (response.ok) {
@@ -363,8 +363,9 @@ const styles = StyleSheet.create({
   },
   reportText: {
     fontFamily: 'Montserrat_400Regular',
-    fontSize: 12,
+    fontSize: 14,
     color: '#0F334D',
+    flex: 1,
     width: '70%',
     textAlign: 'right',
   },

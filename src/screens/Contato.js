@@ -1,51 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useFonts, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
-import emailjs from '@emailjs/browser';
+import email from 'react-native-email'; // Importe a biblioteca de e-mail
 
 const Contato = () => {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [messageLength, setMessageLength] = useState(0);
-  const [userName, setUserName] = useState('');
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({ Montserrat_700Bold, Montserrat_400Regular });
-  
-  // useEffect(() => {
-  //   fetchUserName();
-  // }, []);
-
-  // const fetchUserName = async () => {
-  //   try {
-  //     const response = await fetch(`http://localhost:5000/api/auth/usuarios/`);
-  //     const data = await response.json();
-  //     setUserName(data.Nome);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
 
   const handleSend = () => {
     if (messageLength > 0 && messageLength <= 1000) {
-      const templateParams = {
+      const to = ['suporteecouni@gmail.com']; // Endereço de e-mail fixo
+      email(to, {
         subject: subject,
-        message: message,
-        to_name: userName,
-      };
-
-      emailjs.send('service_43zwb4d', 'template_dxz1yob', templateParams, 'mM66eh7H9EHXsEIZ4')
-        .then(response => {
-          Alert.alert('Sucesso', 'Email enviado com sucesso!');
-          setSubject('');
-          setMessage('');
-          setMessageLength(0);
-        })
-        .catch(error => {
-          console.error(error);
-          Alert.alert('Erro', 'Falha ao enviar email.');
-        });
+        body: message,
+      }).then(() => {
+        Alert.alert('Sucesso', 'Email enviado com sucesso!');
+        setSubject('');
+        setMessage('');
+        setMessageLength(0);
+      }).catch(error => {
+        console.error(error);
+        Alert.alert('Erro', 'Falha ao enviar email.');
+      });
     } else {
       Alert.alert('Erro', 'A mensagem deve conter entre 1 e 1000 caracteres.');
     }
@@ -54,7 +35,7 @@ const Contato = () => {
   if (!fontsLoaded) {
     return null; 
   }
-  
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>

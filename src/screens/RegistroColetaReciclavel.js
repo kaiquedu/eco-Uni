@@ -38,7 +38,7 @@ const RegistroColetaReciclavel = () => {
     };
 
     try {
-      const response = await fetch('http://192.168.1.18:5000/api/coleta/RegistrarColeta', {
+      const response = await fetch('http://192.168.1.84:5000/api/coleta/RegistrarColeta', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
     flex: 1,
+    paddingTop: 40,
   },
   title: {
     fontFamily: 'Montserrat_700Bold',
