@@ -22,7 +22,7 @@ const Perfil = () => {
   const fetchUserData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://192.168.1.84:5000/api/auth/user/${user.Cadastrarid}`, {
+      const response = await axios.get(`http://192.168.43.200:5000/api/auth/user/${user.Cadastrarid}`, {
         headers: {
           Authorization: `Bearer ${user.Token}`
         }
@@ -45,7 +45,7 @@ const Perfil = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await axios.put(`http://192.168.1.84:5000/api/auth/user/${user.Cadastrarid}`, {
+      await axios.put(`http://192.168.43.200:5000/api/auth/user/${user.Cadastrarid}`, {
         Nome: nome,
         Telefone: telefone,
         Email: email,
@@ -78,8 +78,8 @@ const Perfil = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-        <Icon name="chevron-left" size={24} color="#0F334D" />
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+         <Icon name="arrow-left" size={20} color="#0F334D" />
       </TouchableOpacity>
       <View style={styles.header}>
         <View style={styles.profileImageContainer}>
@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
   },
   backButton: {
+    paddingTop: 20,
     position: 'absolute',
     top: 20,
     left: 20,

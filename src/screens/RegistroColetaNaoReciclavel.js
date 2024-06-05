@@ -38,7 +38,7 @@ const RegistroColetaNaoReciclavel = () => {
     };
 
     try {
-      const response = await fetch('http://192.168.1.84:5000/api/coleta/RegistrarColeta', {
+      const response = await fetch('http://192.168.43.200:5000/api/coleta/RegistrarColeta', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -148,14 +148,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Montserrat_700Bold',
-    fontSize: 24,
+    fontSize: 22,
     marginBottom: 20,
     textAlign: 'center',
     color: '#0F334D',
   },
   subtitle: {
     fontFamily: 'Montserrat_700Bold',
-    fontSize: 24,
+    fontSize: 18,
     marginBottom: 20,
     textAlign: 'center',
     color: '#000000',
@@ -188,17 +188,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   button: {
-    padding: 10,
-    borderRadius: 5,
-    width: '45%',
-    alignItems: 'center',
     backgroundColor: '#0F334D',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    flex: 1,
+    marginRight: 5,
   },
   cancelButton: {
     backgroundColor: '#808080',
   },
   registerButton: {
-    backgroundColor: '#000080',
+    backgroundColor: '#0F334D',
   },
   disabledButton: {
     backgroundColor: '#cccccc',

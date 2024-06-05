@@ -14,16 +14,19 @@ const HomeApp = () => {
   const { user } = useAuth();
   const [coletas, setColetas] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showAdditionalIcons, setShowAdditionalIcons] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://192.168.1.84:5000/api/coleta/ObterColetas/${user.Cadastrarid}`);
+      const endpoint = user.Email === 'kaiqueeduardo1407@gmail.com'
+        ? 'http://192.168.43.200:5000/api/coleta/ObterTodasColetas'
+        : `http://192.168.43.200:5000/api/coleta/ObterColetas/${user.Cadastrarid}`;
+      const response = await fetch(endpoint);
       if (response.ok) {
         const data = await response.json();
-        // Ordenar coletas em ordem decrescente de data
         data.sort((a, b) => new Date(b.DataRegistro) - new Date(a.DataRegistro));
-        setColetas(data.slice(0, 10)); // Pegando as últimas 10 coletas
+        setColetas(data.slice(0, 10));
       } else {
         console.error('Falha ao buscar coletas');
       }
@@ -35,7 +38,7 @@ const HomeApp = () => {
 
   useEffect(() => {
     fetchData();
-  }, [user.Cadastrarid]);
+  }, [user.Email, user.Cadastrarid]);
 
   useFocusEffect(
     useCallback(() => {
@@ -44,7 +47,6 @@ const HomeApp = () => {
   );
 
   const [fontsLoaded] = useFonts({ Montserrat_700Bold });
-  const [showAdditionalIcons, setShowAdditionalIcons] = useState(false);
 
   if (!fontsLoaded || loading) {
     return null;
@@ -56,6 +58,14 @@ const HomeApp = () => {
       return "Data Inválida";
     }
     return dataObj.toLocaleDateString('pt-BR') + ' às ' + dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const handleCenterButtonPress = () => {
+    setShowAdditionalIcons(!showAdditionalIcons);
+  };
+
+  const handleCancelPress = () => {
+    setShowAdditionalIcons(false);
   };
 
   return (
@@ -97,7 +107,7 @@ const HomeApp = () => {
           <Icon name="table" size={26} color="#0F334D" />
           <Text style={styles.iconText}>Relatório</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.centerButton} onPress={() => setShowAdditionalIcons(!showAdditionalIcons)}>
+        <TouchableOpacity style={styles.centerButton} onPress={handleCenterButtonPress}>
           <Icon name="plus" size={24} color="#FFF" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Opcoes')}>
@@ -112,13 +122,16 @@ const HomeApp = () => {
       {showAdditionalIcons && (
         <Animatable.View animation="slideInUp" style={styles.additionalIconsContainer}>
           <TouchableOpacity style={[styles.additionalIconButton, { backgroundColor: '#F0B828' }]} onPress={() => navigation.navigate('RegistroColetaReciclavel')}>
-            <Icon name="recycle" size={24} color="#0F334D" />
+            <Icon name="recycle" size={65} color="#0F334D" />
           </TouchableOpacity>
           <TouchableOpacity style={[styles.additionalIconButton, { backgroundColor: '#000' }]} onPress={() => navigation.navigate('RegistroColetaNaoReciclavel')}>
-            <Icon name="trash" size={24} color="#FFF" />
+            <Icon name="trash" size={65} color="#FFF" />
           </TouchableOpacity>
           <TouchableOpacity style={[styles.additionalIconButton, { backgroundColor: '#668CF0' }]} onPress={() => navigation.navigate('RegistroColetaPapelReciclavel')}>
-            <Icon name="file" size={24} color="#0F334D" />
+            <Icon name="file" size={65} color="#0F334D" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.cancelButton} onPress={handleCancelPress}>
+            <Text style={styles.cancelButtonText}>Cancelar</Text>
           </TouchableOpacity>
         </Animatable.View>
       )}
@@ -131,12 +144,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
-    paddingTop: 40, // Increase padding to move the header down
+    paddingTop: 40,
     justifyContent: 'space-between',
   },
   header: {
     alignItems: 'center',
-    marginBottom: 20, // Increase margin to move the header down
+    marginBottom: 20,
   },
   headerText: {
     fontFamily: 'Montserrat_700Bold',
@@ -160,13 +173,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat_700Bold',
     fontSize: 14,
     color: '#0F334D',
-  },
-  containerSection: {
-    backgroundColor: '#F0F0F0',
-    borderRadius: 15,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    marginBottom: 20,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -199,7 +205,7 @@ const styles = StyleSheet.create({
   verHistoricoButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end', // Align to the right
+    justifyContent: 'flex-end',
     marginTop: 20,
   },
   verHistoricoText: {
@@ -234,19 +240,32 @@ const styles = StyleSheet.create({
   },
   additionalIconsContainer: {
     position: 'absolute',
-    bottom: 70,
-    alignSelf: 'center',
-    flexDirection: 'column',
-    alignItems: 'center',
+    bottom: 0,
+    width: '100%',
     justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2,
   },
   additionalIconButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: screenHeight * 0.20,
+    height: screenHeight * 0.20,
+    borderRadius: screenHeight * 0.125,
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 5,
+    marginVertical: 20,
+  },
+  cancelButton: {
+    backgroundColor: '#FF4D4D',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginBottom:5,
+    borderRadius: 20,
+    marginTop: 20,
+  },
+  cancelButtonText: {
+    fontFamily: 'Montserrat_700Bold',
+    fontSize: 16,
+    color: '#FFF',
   },
 });
 

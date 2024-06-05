@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useFonts, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
-import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 
 const Politica = () => {
@@ -17,10 +17,12 @@ const Politica = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={24} color="#0F334D" />
-      </TouchableOpacity>
-      <Text style={styles.header}>Política de Privacidade</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-left" size={20} color="#0F334D" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Política de Privacidade</Text>
+      </View>
       <ScrollView style={styles.content}>
         <Text style={styles.text}>
           Esta Política de Privacidade descreve como o Centro Universitário coleta, usa e protege as informações pessoais dos usuários de sua aplicação móvel. Ao utilizar nossa aplicação móvel, você concorda com os termos descritos nesta política.
@@ -86,13 +88,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   backButton: {
-    marginBottom: 10,
+    marginRight: 10,
   },
   header: {
-    fontSize: 24,
-    fontFamily: 'Montserrat_700Bold',
-    color: '#0F334D',
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 20,
+    paddingTop: 20,
+  },
+  title: {
+    fontFamily: 'Montserrat_700Bold',
+    fontSize: 22,
+    color: '#0F334D',
+    marginLeft: 10,
   },
   content: {
     flex: 1,

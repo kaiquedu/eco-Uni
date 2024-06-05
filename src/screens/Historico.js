@@ -19,12 +19,17 @@ const Historico = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://192.168.1.84:5000/api/coleta/ObterColetas/${user.Cadastrarid}`);
+      let endpoint;
+      if (user.Email === 'kaiqueeduardo1407@gmail.com') {
+        endpoint = 'http://192.168.43.200:5000/api/coleta/ObterTodasColetas';
+      } else {
+        endpoint = `http://192.168.43.200:5000/api/coleta/ObterColetas/${user.Cadastrarid}`;
+      }
+      const response = await fetch(endpoint);
       if (response.ok) {
         const data = await response.json();
-        // Ordenar coletas em ordem decrescente de data
         data.sort((a, b) => new Date(b.DataRegistro) - new Date(a.DataRegistro));
-        setColetas(data.slice(0, 10)); // Pegando as últimas 10 coletas
+        setColetas(data);
       } else {
         console.error('Falha ao buscar coletas');
       }
@@ -36,14 +41,13 @@ const Historico = () => {
   
   useEffect(() => {
     fetchData();
-  }, [user.Cadastrarid]);
+  }, [user.Email, user.Cadastrarid]);
   
   useFocusEffect(
     useCallback(() => {
       fetchData();
     }, [])
   );
-  
 
   const [fontsLoaded] = useFonts({ Montserrat_700Bold });
 
@@ -67,7 +71,7 @@ const Historico = () => {
         { text: "Cancelar", style: "cancel" },
         { text: "Deletar", onPress: async () => {
             try {
-              const response = await fetch(`http://192.168.1.84:5000/api/coleta/DeletarColeta/${user.Cadastrarid}/${coletaId}`, { method: 'DELETE' });
+              const response = await fetch(`http://192.168.43.200:5000/api/coleta/DeletarColeta/${user.Cadastrarid}/${coletaId}`, { method: 'DELETE' });
               if (response.ok) {
                 setColetas(coletas.filter(coleta => coleta.Id !== coletaId));
                 clearColeta();
@@ -113,7 +117,7 @@ const Historico = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      {selectedColeta && (
+      {selectedColeta && user.Email !== 'kaiqueeduardo1407@gmail.com' && (
         <View style={styles.actionButtons}>
           <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(selectedColeta)}>
             <Text style={styles.buttonText}>Editar</Text>
@@ -176,43 +180,44 @@ const styles = StyleSheet.create({
   coletaQuantidade: {
     fontFamily: 'Montserrat_400Regular',
     fontSize: 12,
-    color: '#7F7F7F',
+    color:
+    '#7F7F7F',
     textAlign: 'right',
-  },
-  actionButtons: {
+    },
+    actionButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
-  },
-  editButton: {
+    },
+    editButton: {
     backgroundColor: '#0F334D',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
     flex: 1,
     marginRight: 5,
-  },
-  deleteButton: {
+    },
+    deleteButton: {
     backgroundColor: '#F44336',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
     flex: 1,
     marginLeft: 5,
-  },
-  cancelButton: {
+    },
+    cancelButton: {
     backgroundColor: '#B0B0B0',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
     flex: 1,
     marginLeft: 5,
-  },
-  buttonText: {
+    },
+    buttonText: {
     fontFamily: 'Montserrat_700Bold',
     color: '#FFFFFF',
     fontSize: 16,
-  },
-});
-
-export default Historico;
+    },
+    });
+    
+    export default Historico;

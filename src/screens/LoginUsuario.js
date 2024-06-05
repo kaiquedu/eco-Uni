@@ -22,7 +22,7 @@ const LoginUsuario = () => {
 
     try {
       console.log('Sending request with:', { Email: email, Senha: senha });
-      const response = await axios.post('http://192.168.1.84:5000/api/auth/login', {
+      const response = await axios.post('http://192.168.43.200:5000/api/auth/login', {
         Email: email,
         Senha: senha,
       });

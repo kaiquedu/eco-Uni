@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, TextInput } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { Picker } from '@react-native-picker/picker';
-import { useFonts, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const EditarColeta = () => {
   const navigation = useNavigation();
@@ -19,7 +18,7 @@ const EditarColeta = () => {
     const fetchColeta = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://192.168.1.84:5000/api/coleta/ObterColeta/${user.Cadastrarid}/${coletaId}`);
+        const response = await fetch(`http://192.168.43.200:5000/api/coleta/ObterColeta/${user.Cadastrarid}/${coletaId}`);
         if (response.ok) {
           const data = await response.json();
           setColeta(data);
@@ -36,103 +35,99 @@ const EditarColeta = () => {
   }, [user.Cadastrarid, coletaId]);
 
   const handleConfirmar = async () => {
-    // Implemente aqui a lógica para enviar as alterações da coleta para o servidor via método PUT
+    const coletaEditada = {
+      ...coleta,
+      TamanhoSaco: parseInt(coleta.TamanhoSaco, 10),
+      Quantidade: parseInt(coleta.Quantidade, 10),
+    };
+
+    console.log('Dados enviados para edição:', coletaEditada);  // Adicionando log para verificar os dados
     try {
-      const response = await fetch(`http://192.168.1.84:5000/api/coleta/EditarColeta/${user.Cadastrarid}/${coletaId}`, {
+      const response = await fetch(`http://192.168.43.200:5000/api/coleta/EditarColeta/${user.Cadastrarid}/${coletaId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(coleta),
+        body: JSON.stringify(coletaEditada),
       });
       if (response.ok) {
-        // Coleta editada com sucesso
-        Alert.alert('Sucesso', 'Coleta editada com sucesso!');
+        Alert.alert('Sucesso', 'Coleta editada com sucesso');
         navigation.goBack();
       } else {
-        console.error('Falha ao editar coleta');
-        Alert.alert('Erro', 'Falha ao editar coleta. Por favor, tente novamente.');
+        const errorData = await response.json();
+        console.error('Falha ao editar coleta:', errorData);
+        Alert.alert('Erro', 'Falha ao editar coleta');
       }
     } catch (error) {
       console.error('Erro ao editar coleta:', error);
-      Alert.alert('Erro', 'Erro ao editar coleta. Por favor, tente novamente.');
+      Alert.alert('Erro', 'Erro ao editar coleta');
     }
   };
 
-  const handleCancelar = () => {
-    navigation.goBack();
-  };
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
 
-  const handleChange = (field, value) => {
-    setColeta({ ...coleta, [field]: value });
-  };
-
-  const renderLoading = () => {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0F334D" />
-      </View>
-    );
-  };
-
-  if (loading || !coleta) {
-    return renderLoading();
+  if (!coleta) {
+    return <Text>Carregando...</Text>;
   }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={handleCancelar} style={styles.backButton}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-left" size={20} color="#0F334D" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Editar Coleta</Text>
+        <Text style={styles.title}>Editar Coleta</Text>
       </View>
-      <View style={styles.formContainer}>
-        <Text style={styles.label}>Tipo de Resíduo *</Text>
-        <Picker
-          selectedValue={coleta.TipoResiduo}
-          style={styles.picker}
-          onValueChange={(value) => handleChange('TipoResiduo', value)}
-        >
-          <Picker.Item label="Material Reciclável" value="Material Reciclável" />
-          <Picker.Item label="Material Não Reciclável" value="Material Não Reciclável" />
-          <Picker.Item label="Papel Reciclável" value="Papel Reciclável" />
-        </Picker>
-        <Text style={styles.label}>Quantidade *</Text>
-        <Picker
-          selectedValue={coleta.Quantidade}
-          style={styles.picker}
-          onValueChange={(value) => handleChange('Quantidade', value)}
-        >
-          {[...Array(10).keys()].map((_, i) => (
-            <Picker.Item key={i} label={`${i + 1}`} value={`${i + 1}`} />
-          ))}
-        </Picker>
-        <Text style={styles.label}>Tamanho do Saco *</Text>
-        <Picker
-          selectedValue={coleta.TamanhoSaco}
-          style={styles.picker}
-          onValueChange={(value) => handleChange('TamanhoSaco', value)}
-        >
-          <Picker.Item label="1L" value="1L" />
-          <Picker.Item label="10L" value="10L" />
-        </Picker>
-        <Text style={styles.label}>Observações</Text>
-        <TextInput
-          style={styles.textInput}
-          value={coleta.Observacoes}
-          onChangeText={(value) => handleChange('Observacoes', value)}
-          placeholder="Escreva aqui suas observações"
-          multiline
-          maxLength={1000}
-        />
-      </View>
+      <Text style={styles.label}>Tipo de Resíduo</Text>
+      <Picker
+        selectedValue={coleta.TipoResiduo}
+        style={styles.picker}
+        onValueChange={(itemValue) => setColeta({ ...coleta, TipoResiduo: itemValue })}
+      >
+        <Picker.Item label="MAterial Reciclável" value="Material Reciclável" />
+        <Picker.Item label="Material Não Reciclável" value="Material Não Reciclável" />
+        <Picker.Item label="Papel Reciclável" value="Papel Reciclável" />
+      </Picker>
+      <Text style={styles.label}>Tamanho do Saco</Text>
+      <Picker
+        selectedValue={coleta.TamanhoSaco}
+        style={styles.picker}
+        onValueChange={(itemValue) => setColeta({ ...coleta, TamanhoSaco: itemValue })}
+      >
+        <Picker.Item label="1L" value="1" />
+        <Picker.Item label="10L" value="10" />
+      </Picker>
+      <Text style={styles.label}>Quantidade</Text>
+      <Picker
+        selectedValue={coleta.Quantidade}
+        style={styles.picker}
+        onValueChange={(itemValue) => setColeta({ ...coleta, Quantidade: itemValue })}
+      >
+        {[...Array(10).keys()].map((_, i) => (
+          <Picker.Item key={i} label={`${i + 1}`} value={`${i + 1}`} />
+        ))}
+      </Picker>
+      <Text style={styles.label}>Observações</Text>
+      <TextInput
+        style={styles.input}
+        multiline
+        maxLength={1000}
+        placeholder="Escreva aqui suas observações"
+        value={coleta.Observacoes}
+        onChangeText={(text) => setColeta({ ...coleta, Observacoes: text })}
+      />
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.confirmarButton} onPress={handleConfirmar}>
-          <Text style={styles.buttonText}>Confirmar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.cancelButton} onPress={handleCancelar}>
+        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => navigation.goBack()}>
           <Text style={styles.buttonText}>Cancelar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, !coleta.TamanhoSaco || !coleta.Quantidade ? styles.disabledButton : styles.registerButton]}
+          onPress={handleConfirmar}
+          disabled={!coleta.TamanhoSaco || !coleta.Quantidade}
+        >
+          <Text style={styles.buttonText}>Confirmar</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -141,26 +136,21 @@ const EditarColeta = () => {
 
 const styles = StyleSheet.create({
   container: {
+    padding: 20,
+    backgroundColor: '#fff',
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 20,
     paddingTop: 40,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 20,
   },
-  backButton: {
-    marginRight: 10,
-  },
-  headerText: {
+  title: {
     fontFamily: 'Montserrat_700Bold',
-    fontSize: 18,
+    fontSize: 22,
     color: '#0F334D',
-  },
-  formContainer: {
-    flex: 1,
-    justifyContent: 'center',
+    marginLeft: 10,
   },
   label: {
     fontFamily: 'Montserrat_700Bold',
@@ -174,7 +164,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 20,
   },
-  textInput: {
+  input: {
     height: 100,
     borderColor: '#ccc',
     borderWidth: 1,
@@ -188,9 +178,8 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
   },
-  confirmarButton: {
+  button: {
     backgroundColor: '#0F334D',
     padding: 15,
     borderRadius: 10,
@@ -199,22 +188,18 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   cancelButton: {
-    backgroundColor: '#B0B0B0',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    flex: 1,
-    marginLeft: 5,
+    backgroundColor: '#808080',
+  },
+  registerButton: {
+    backgroundColor: '#0F334D',
+  },
+  disabledButton: {
+    backgroundColor: '#cccccc',
   },
   buttonText: {
+    color: '#fff',
     fontFamily: 'Montserrat_700Bold',
-    color: '#FFFFFF',
     fontSize: 16,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 

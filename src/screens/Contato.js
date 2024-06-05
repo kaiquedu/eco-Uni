@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import email from 'react-native-email'; // Importe a biblioteca de e-mail
 
@@ -38,11 +38,13 @@ const Contato = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Icon name="arrow-back" size={24} color="#0F334D" />
-      </TouchableOpacity>
-      <Text style={styles.header}>Contato</Text>
-      <Text style={styles.label}>Assunto</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-left" size={20} color="#0F334D" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Contato</Text>
+      </View>
+      <Text style={styles.label}>Escreva sua mensagem</Text>
       <TextInput
         style={styles.input}
         placeholder="Assunto"
@@ -75,13 +77,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   backButton: {
-    marginBottom: 10,
+    marginRight: 10,
   },
   header: {
-    fontSize: 24,
-    fontFamily: 'Montserrat_700Bold',
-    color: '#0F334D',
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 20,
+    paddingTop: 20,
+  },
+  title: {
+    fontFamily: 'Montserrat_700Bold',
+    fontSize: 22,
+    color: '#0F334D',
+    marginLeft: 10,
   },
   label: {
     fontSize: 16,

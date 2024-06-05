@@ -32,8 +32,8 @@ const Opcoes = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-        <Icon name="chevron-left" size={24} color="#0F334D" />
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-left" size={20} color="#0F334D" />
       </TouchableOpacity>
       <Text style={styles.headerText}>O que deseja fazer?</Text>
       <ScrollView contentContainerStyle={styles.optionsContainer}>
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   backButton: {
+    paddingTop: 20,
     position: 'absolute',
     top: 20,
     left: 20,

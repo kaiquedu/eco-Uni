@@ -21,7 +21,7 @@ const Cadastro = () => {
 
   const handleCadastro = async () => {
     try {
-      const response = await fetch('http://192.168.1.84:5000/api/auth/registro', {
+      const response = await fetch('http://192.168.43.200:5000/api/auth/registro', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

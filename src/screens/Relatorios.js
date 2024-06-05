@@ -34,8 +34,8 @@ const Relatorios = () => {
     const fetchData = async () => {
       try {
         const endpoint = user.Email === 'kaiqueeduardo1407@gmail.com'
-          ? 'http://192.168.1.84:5000/api/coleta/ObterTodasColetas'
-          : `http://192.168.1.84:5000/api/coleta/ObterColetas/${user.Cadastrarid}`;
+          ? 'http://192.168.43.200:5000/api/coleta/ObterTodasColetas'
+          : `http://192.168.43.200:5000/api/coleta/ObterColetas/${user.Cadastrarid}`;
   
         const response = await fetch(endpoint);
         if (response.ok) {
@@ -219,9 +219,9 @@ const Relatorios = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-        <Icon name="chevron-left" size={24} color="#0F334D" />
-      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-left" size={20} color="#0F334D" />
+        </TouchableOpacity>
       <Text style={styles.headerText}>Relatórios</Text>
       
       <View style={styles.filterContainer}>
@@ -300,6 +300,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   backButton: {
+    paddingTop: 20,
     position: 'absolute',
     top: 20,
     left: 20,
