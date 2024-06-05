@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Modal, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -15,7 +15,7 @@ const GerarRelatorios = () => {
   const { selectedColetas } = route.params;
   const chartRef = useRef(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [viewType, setViewType] = useState('day'); // Adiciona um estado para o tipo de visualização do gráfico
+  const [viewType, setViewType] = useState('day');
 
   const handleBack = () => {
     navigation.goBack();
@@ -39,7 +39,6 @@ const GerarRelatorios = () => {
   const generatePDF = async (groupedData, isMonthly) => {
     const doc = new jsPDF();
 
-    // Título e imagem
     const imgPath = require('../assets/images/ecouni.png');
     const imgAsset = Asset.fromModule(imgPath);
     await imgAsset.downloadAsync();
@@ -53,16 +52,18 @@ const GerarRelatorios = () => {
     doc.setFontSize(18);
     doc.text('Relatório de Registro das Coletas', doc.internal.pageSize.width / 2, imgHeight + 20, { align: 'center' });
 
-    // Cabeçalhos da tabela
     doc.setFontSize(14);
     doc.text('Data do Registro', 15, imgHeight + 45);
     doc.text('Tipo de Resíduo', doc.internal.pageSize.width / 2 - 30, imgHeight + 45);
     doc.text('Quantidade (L)', doc.internal.pageSize.width - 50, imgHeight + 45);
 
-    // Renderizar os dados agrupados na tabela
     let rowIndex = 1;
-    let tableHeight = 0; // Inicializa a altura da tabela
-    Object.keys(groupedData).sort((a, b) => a.localeCompare(b)).forEach(data => {
+    let tableHeight = 0;
+    Object.keys(groupedData).sort((a, b) => {
+      const [dayA, monthA, yearA] = a.split('/').map(Number);
+      const [dayB, monthB, yearB] = b.split('/').map(Number);
+      return new Date(yearA, monthA - 1, dayA) - new Date(yearB, monthB - 1, dayB);
+    }).forEach(data => {
       Object.keys(groupedData[data]).forEach(tipoResiduo => {
         const quantidadeLitros = groupedData[data][tipoResiduo].toString();
         const yPosition = imgHeight + 45 + (rowIndex * 10);
@@ -72,16 +73,14 @@ const GerarRelatorios = () => {
         rowIndex++;
       });
     });
-    tableHeight = (rowIndex - 1) * 10 + 20; // Calcula a altura da tabela com base na quantidade de linhas de dados
+    tableHeight = (rowIndex - 1) * 10 + 20;
 
-    // Desenhar a tabela ao redor dos dados
     doc.setLineWidth(0.5);
-    doc.rect(10, imgHeight + 35, doc.internal.pageSize.width - 20, tableHeight); // Define o retângulo da tabela com a altura calculada
+    doc.rect(10, imgHeight + 35, doc.internal.pageSize.width - 20, tableHeight);
 
-    // Rodapé
     const footerText = 'Centro Universitário UNIFAAT - Estr. Mun. Jucá Sanches, 1050 - Boa Vista, Atibaia - SP, 12952-560';
     const footerText2 = '2024 © EcoUni';
-    const footerFontSize = 10; // Reduzindo o tamanho da fonte do rodapé
+    const footerFontSize = 10;
     doc.setFontSize(footerFontSize);
     const footerX = (doc.internal.pageSize.width - doc.getStringUnitWidth(footerText) * footerFontSize / doc.internal.scaleFactor) / 2;
     const footerX2 = (doc.internal.pageSize.width - doc.getStringUnitWidth(footerText2) * footerFontSize / doc.internal.scaleFactor) / 2;
@@ -89,20 +88,14 @@ const GerarRelatorios = () => {
     doc.text(footerText, footerX, footerY);
     doc.text(footerText2, footerX2, footerY + 5);
 
-    // Filtrar as coletas para selecionar apenas aquelas que têm observações
     const coletasComObservacoes = selectedColetas.filter(coleta => coleta.Observacoes);
-
-    // Adicionar observações apenas se houver coletas com observações
     const observacoesText = coletasComObservacoes.length > 0
       ? coletasComObservacoes.map(coleta => `${formatDate(coleta.DataRegistro)}: ${coleta.Observacoes}`).join('\n')
       : 'Nenhuma observação registrada';
-
-    // Adicionar observações no final do documento
     const observacoesLines = doc.splitTextToSize(observacoesText, doc.internal.pageSize.width - 20);
     const observacoesHeight = observacoesLines.length * 10;
     doc.text(observacoesLines, 10, doc.internal.pageSize.height - observacoesHeight - 20);
 
-    // Gerar e salvar o PDF
     const pdfOutput = doc.output('datauristring').split(',')[1];
     const pdfUri = `${FileSystem.documentDirectory}Relatorio_Coletas.pdf`;
     await FileSystem.writeAsStringAsync(pdfUri, pdfOutput, { encoding: FileSystem.EncodingType.Base64 });
@@ -118,7 +111,7 @@ const GerarRelatorios = () => {
 
     selectedColetas.forEach(coleta => {
       const data = formatDate(coleta.DataRegistro);
-      const tipoResiduo = coleta.TipoResiduo || 'Desconhecido'; // Definir um valor padrão caso o tipo de resíduo esteja undefined
+      const tipoResiduo = coleta.TipoResiduo || 'Desconhecido';
       if (!groupedData[data]) {
         groupedData[data] = {};
       }
@@ -136,7 +129,7 @@ const GerarRelatorios = () => {
 
     selectedColetas.forEach(coleta => {
       const data = formatMonthYear(coleta.DataRegistro);
-      const tipoResiduo = coleta.TipoResiduo || 'Desconhecido'; // Definir um valor padrão caso o tipo de resíduo esteja undefined
+      const tipoResiduo = coleta.TipoResiduo || 'Desconhecido';
       if (!groupedData[data]) {
         groupedData[data] = {};
       }
@@ -164,124 +157,237 @@ const GerarRelatorios = () => {
       groupedData[date][coleta.TipoResiduo] += quantidadeLitros;
     });
 
-    const labels = Object.keys(groupedData).sort(); // Ordenar as datas
+    const labels = Object.keys(groupedData).sort((a, b) => {
+      const [dayA, monthA, yearA] = a.split('/').map(Number);
+      const [dayB, monthB, yearB] = b.split('/').map(Number);
+      return new Date(yearA, monthA - 1, dayA) - new Date(yearB, monthB - 1, dayB);
+    });
+
     const datasets = [];
 
-    const typesOfWaste = [...new Set(selectedColetas.map(coleta => coleta.TipoResiduo))];
-    const colors = ['#F0B828', '#668CF0', '#000000', '#4BC0C0', '#9966FF'];
-
-    typesOfWaste.forEach((type, index) => {
-      const data = labels.map(date => groupedData[date][type] || 0);
+    const tipoResiduos = Array.from(new Set(selectedColetas.map(coleta => coleta.TipoResiduo)));
+    const cores = {
+      'Material Reciclável': '#F0B828',
+      'Material Não Reciclável': '#000000',
+      'Papel Reciclável': '#668CF0',
+    };
+    tipoResiduos.forEach(tipoResiduo => {
+      const data = labels.map(label => groupedData[label][tipoResiduo] || 0);
+      const color = cores[tipoResiduo] || '#000000';
       datasets.push({
         data,
-        color: (opacity = 1) => colors[index % colors.length],
-        strokeWidth: 2,
-        label: type,
+        color: () => color,
+        name: tipoResiduo,
       });
     });
 
-    return {
-      labels,
-      datasets,
-      legend: typesOfWaste,
-    };
+    return { labels, datasets };
   };
 
   const chartData = processChartData();
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-        <Icon name="arrow-left" size={20} color="#000" />
+    <ScrollView contentContainerStyle={styles.container}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Icon name="arrow-left" size={20} color="#0F334D" />
       </TouchableOpacity>
-      <Text style={styles.title}>Gráficos de Registro das Coletas</Text>
-      <LineChart
-        data={chartData}
-        width={350}
-        height={220}
-        chartConfig={{
-          backgroundColor: '#e26a00',
-          backgroundGradientFrom: '#fb8c00',
-          backgroundGradientTo: '#ffa726',
-          decimalPlaces: 2,
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          style: {
-            borderRadius: 16
-          },
-        }}
-        bezier
-        style={styles.chart}
-        formatXLabel={(label) => label.split(' ')[0]} // Rotate X-axis labels to vertical
-      />
-      <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
-        <Text style={styles.buttonText}>Gerar PDF</Text>
-      </TouchableOpacity>
-      <View style={styles.viewTypeButtons}>
+      <View style={styles.chartContainer} ref={chartRef}>
+        <LineChart
+          data={chartData}
+          width={350}
+          height={350}
+          chartConfig={{
+            backgroundColor: '#FFFFFF',
+            backgroundGradientFrom: '#FFFFFF',
+            backgroundGradientTo: '#FFFFFF',
+            decimalPlaces: 2,
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            style: {
+              borderRadius: 16,
+            },
+            propsForDots: {
+              r: '5',
+              strokeWidth: '10',
+            },
+            propsForLabels: {
+              fontFamily: 'Montserrat_700Bold',
+              fontSize: 12,
+              rotation: 0,
+              textAnchor: 'end',
+            },
+            propsForVerticalLabels: {
+              fontFamily: 'Montserrat_700Bold',
+              fontSize: 10,
+              rotation: -45,
+              textAnchor: 'end',
+            },
+          }}
+          style={{
+            paddingTop: 10,
+            marginVertical: 5,
+            borderRadius: 16,
+          }}
+          bezier
+          fromZero
+          withInnerLines={false}
+        />
+      </View>
+      <View style={styles.legendContainer}>
+        {chartData.datasets.map((dataset, index) => (
+          <View key={index} style={styles.legendItem}>
+            <View style={[styles.legendColor, { backgroundColor: dataset.color() }]} />
+            <Text style={styles.legendText}>{dataset.name}</Text>
+          </View>
+        ))}
+      </View>
+      <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={[styles.viewTypeButton, viewType === 'day' && styles.activeViewTypeButton]}
-          onPress={() => setViewType('day')}
+          style={styles.button}
+          onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.viewTypeButtonText}>Por Dia</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.viewTypeButton, viewType === 'month' && styles.activeViewTypeButton]}
-          onPress={() => setViewType('month')}
-        >
-          <Text style={styles.viewTypeButtonText}>Por Mês</Text>
+          <Text style={styles.buttonText}>Gerar Relatório em PDF</Text>
         </TouchableOpacity>
       </View>
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setModalVisible(false)}
-      >
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Exibição por:</Text>
+        <View style={styles.viewTypeButtons}>
+          <TouchableOpacity
+            style={[styles.viewTypeButton, viewType === 'day' && styles.selectedViewTypeButton]}
+            onPress={() => setViewType('day')}
+          >
+            <Text style={styles.viewTypeButtonText}>Dia</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.viewTypeButton, viewType === 'month' && styles.selectedViewTypeButton]}
+            onPress={() => setViewType('month')}
+          >
+            <Text style={styles.viewTypeButtonText}>Mês</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Escolha o Tipo de Relatório</Text>
-            <TouchableOpacity style={styles.modalButton} onPress={handleGeneratePDFPorDia}>
-              <Text style={styles.modalButtonText}>Por Dia</Text>
+            <Text style={styles.modalTitle}>Escolha uma opção:</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleGeneratePDFPorDia}
+            >
+              <Text style={styles.modalButtonText}>Relatório por Dia</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.modalButton} onPress={handleGeneratePDFPorMes}>
-              <Text style={styles.modalButtonText}>Por Mês</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleGeneratePDFPorMes}
+            >
+              <Text style={styles.modalButtonText}>Relatório por Mês</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.modalCloseButtonText}>Cancelar</Text>
+            <TouchableOpacity
+              style={[styles.modalButton, { backgroundColor: 'red' }]}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.modalButtonText}>Cancelar</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
   backButton: {
-    marginBottom: 20,
+    paddingTop: 20,
+    position: 'absolute',
+    top: 20,
+    left: 20,
   },
-  title: {
-    fontSize: 24,
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    backgroundColor: '#0F334D',
+    paddingHorizontal: 10,
+  },
+  headerTitle: {
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
+    color: '#FFFFFF',
+    marginLeft: 10,
   },
-  chart: {
+  chartContainer: {
+    alignItems: 'center',
     marginVertical: 20,
-    borderRadius: 16,
+    marginTop: 100,
+  },
+  legendContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    marginBottom: 5,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 10,
+  },
+  legendColor: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    marginRight: 5,
+  },
+  legendText: {
+    fontFamily: 'Montserrat_400Regular',
+    fontSize: 14,
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    marginVertical: 20,
   },
   button: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
+    backgroundColor: '#0F334D',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
   },
   buttonText: {
-    color: '#FFF',
+    fontFamily: 'Montserrat_700Bold',
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  footer: {
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  footerText: {
+    fontFamily: 'Montserrat_700Bold',
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  viewTypeButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  viewTypeButton: {
+    backgroundColor: '#0F334D',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  selectedViewTypeButton: {
+    backgroundColor: '#0C2534',
+  },
+  viewTypeButtonText: {
+    fontFamily: 'Montserrat_700Bold',
+    color: '#FFFFFF',
     fontSize: 16,
   },
   modalContainer: {
@@ -292,53 +398,29 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: 300,
-    backgroundColor: '#FFF',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
     padding: 20,
-    borderRadius: 8,
     alignItems: 'center',
   },
   modalTitle: {
+    fontFamily: 'Montserrat_700Bold',
     fontSize: 18,
+    fontWeight: 'bold',
     marginBottom: 20,
   },
   modalButton: {
-    backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 10,
+    backgroundColor: '#0F334D',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginVertical: 10,
     width: '100%',
+    alignItems: 'center',
   },
   modalButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-  },
-  modalCloseButton: {
-    backgroundColor: '#FF6347',
-    padding: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-    width: '100%',
-  },
-  modalCloseButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-  },
-  viewTypeButtons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  viewTypeButton: {
-    padding: 10,
-    marginHorizontal: 10,
-    borderRadius: 8,
-  },
-  activeViewTypeButton: {
-    backgroundColor: '#4CAF50',
-  },
-  viewTypeButtonText: {
-    color: '#FFF',
+    fontFamily: 'Montserrat_700Bold',
+    color: '#FFFFFF',
     fontSize: 16,
   },
 });

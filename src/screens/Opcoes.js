@@ -66,13 +66,10 @@ const Opcoes = () => {
           <Text style={styles.optionText}>Termos de uso</Text>
           <Icon name="chevron-right" size={16} color="#0F334D" />
         </TouchableOpacity>
-        {/* Usando Cadastrarid somente se user não for nulo */}
-        {user && (
-          <TouchableOpacity style={styles.optionItem} onPress={handleLogout}>
-            <Text style={styles.optionText}>Sair</Text>
-            <Icon name="chevron-right" size={16} color="#0F334D" />
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.optionText}>Sair</Text>
+          <Icon name="chevron-right" size={16} color="#0F334D" />
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
