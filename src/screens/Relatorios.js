@@ -7,6 +7,7 @@ import Modal from 'react-native-modal';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Checkbox from 'expo-checkbox';
 import { useAuth } from '../../AuthContext';
+import { API_URL } from '@env';
 
 const Relatorios = () => {
   const navigation = useNavigation();
@@ -25,7 +26,7 @@ const Relatorios = () => {
   const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
-    if (user.Email !== 'kaiqueeduardo1407@gmail.com') {
+    if (user.Email !== 'admteste@gmail.com') {
       Alert.alert('Acesso Restrito', 'Seu perfil não possui acesso para este serviço. Entre em contato com o seu administrador para qualquer dúvida.');
       navigation.goBack();
       return;
@@ -33,9 +34,9 @@ const Relatorios = () => {
   
     const fetchData = async () => {
       try {
-        const endpoint = user.Email === 'kaiqueeduardo1407@gmail.com'
-          ? 'http://192.168.43.200:5000/api/coleta/ObterTodasColetas'
-          : `http://192.168.43.200:5000/api/coleta/ObterColetas/${user.Cadastrarid}`;
+        const endpoint = user.Email === 'admteste@gmail.com'
+          ? `${API_URL}/api/coleta/ObterTodasColetas`
+          : `${API_URL}/api/coleta/ObterColetas/${user.Cadastrarid}`;
   
         const response = await fetch(endpoint);
         if (response.ok) {

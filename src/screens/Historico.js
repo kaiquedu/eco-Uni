@@ -5,6 +5,7 @@ import { useFonts, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext';
 import { useColeta } from '../../ColetaContext';
+import { API_URL } from '@env';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -20,10 +21,10 @@ const Historico = () => {
     setLoading(true);
     try {
       let endpoint;
-      if (user.Email === 'kaiqueeduardo1407@gmail.com') {
-        endpoint = 'http://192.168.43.200:5000/api/coleta/ObterTodasColetas';
+      if (user.Email === 'admteste@gmail.com') {
+        endpoint = `${API_URL}/api/coleta/ObterTodasColetas`;
       } else {
-        endpoint = `http://192.168.43.200:5000/api/coleta/ObterColetas/${user.Cadastrarid}`;
+        endpoint = `${API_URL}/api/coleta/ObterColetas/${user.Cadastrarid}`;
       }
       const response = await fetch(endpoint);
       if (response.ok) {
@@ -71,7 +72,7 @@ const Historico = () => {
         { text: "Cancelar", style: "cancel" },
         { text: "Deletar", onPress: async () => {
             try {
-              const response = await fetch(`http://192.168.43.200:5000/api/coleta/DeletarColeta/${user.Cadastrarid}/${coletaId}`, { method: 'DELETE' });
+              const response = await fetch(`${API_URL}/api/coleta/DeletarColeta/${user.Cadastrarid}/${coletaId}`, { method: 'DELETE' });
               if (response.ok) {
                 setColetas(coletas.filter(coleta => coleta.Id !== coletaId));
                 clearColeta();

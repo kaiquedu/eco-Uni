@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import { useNavigation } from '@react-navigation/native';
@@ -26,14 +26,13 @@ const Opcoes = () => {
     navigation.replace('Login'); // Redireciona para a tela de login
   };
 
-  // Adiciona verificação para Cadastrarid
-  const Cadastrarid = user ? user.Cadastrarid : null;
-  console.log("Valor de Cadastrarid:", Cadastrarid);
+  // Adiciona um log para verificar o valor de user.Email
+  console.log("Valor de user.Email:", user ? user.Email : "usuário não logado");
 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Icon name="arrow-left" size={20} color="#0F334D" />
+        <Icon name="arrow-left" size={20} color="#0F334D" />
       </TouchableOpacity>
       <Text style={styles.headerText}>O que deseja fazer?</Text>
       <ScrollView contentContainerStyle={styles.optionsContainer}>
@@ -58,6 +57,12 @@ const Opcoes = () => {
           </View>
           <Icon name="chevron-right" size={16} color="#0F334D" />
         </TouchableOpacity>
+        {user && user.Email === 'kaiqueeduardo1407@gmail.com' && (
+          <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Cadastro')}>
+            <Text style={styles.optionText}>Cadastrar novo usuário</Text>
+            <Icon name="chevron-right" size={16} color="#0F334D" />
+          </TouchableOpacity>
+        )} 
         <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Politica')}>
           <Text style={styles.optionText}>Política de privacidade</Text>
           <Icon name="chevron-right" size={16} color="#0F334D" />

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { API_URL } from '@env';
 
 const Perfil = () => {
   const { user, updateUser } = useAuth();
@@ -22,7 +23,7 @@ const Perfil = () => {
   const fetchUserData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://192.168.43.200:5000/api/auth/user/${user.Cadastrarid}`, {
+      const response = await axios.get(`${API_URL}/api/auth/user/${user.Cadastrarid}`, {
         headers: {
           Authorization: `Bearer ${user.Token}`
         }
@@ -45,7 +46,7 @@ const Perfil = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await axios.put(`http://192.168.43.200:5000/api/auth/user/${user.Cadastrarid}`, {
+      await axios.put(`${API_URL}/api/auth/user/${user.Cadastrarid}`, {
         Nome: nome,
         Telefone: telefone,
         Email: email,

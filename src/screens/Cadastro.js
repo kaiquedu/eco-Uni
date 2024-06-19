@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } fro
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
 import { useNavigation } from '@react-navigation/native';
+import { API_URL } from '@env';
 
 const Cadastro = () => {
   const [fontsLoaded] = useFonts({
@@ -21,7 +22,7 @@ const Cadastro = () => {
 
   const handleCadastro = async () => {
     try {
-      const response = await fetch('http://192.168.43.200:5000/api/auth/registro', {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,62 +56,65 @@ const Cadastro = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.logoContainer}>
-        <Image source={require('../assets/images/logo.png')} style={styles.logo} />
-        <Image source={require('../assets/images/nome.png')} style={styles.appName} />
-      </View>
-      <View style={styles.formContainer}>
-        <Text style={styles.inputLabel}>Nome completo</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Digite seu nome completo"
-          value={nome}
-          onChangeText={setNome}
-        />
-        <Text style={styles.inputLabel}>E-mail</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Digite seu e-mail"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <Text style={styles.inputLabel}>Telefone</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Digite seu telefone"
-          value={telefone}
-          onChangeText={setTelefone}
-        />
-        <Text style={styles.inputLabel}>Senha</Text>
-        <View style={styles.passwordContainer}>
-          <TextInput
-            style={styles.passwordInput}
-            placeholder="Digite sua senha"
-            secureTextEntry={!passwordVisible}
-            value={senha}
-            onChangeText={setSenha}
-          />
-          <TouchableOpacity style={styles.eyeIcon} onPress={() => setPasswordVisible(!passwordVisible)}>
-            <Icon name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color="#0F334D" />
-          </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-left" size={20} color="#0F334D" />
+        </TouchableOpacity>
+        <View style={styles.logoContainer}>
+          <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+          <Image source={require('../assets/images/nome.png')} style={styles.appName} />
         </View>
-        <Text style={styles.inputLabel}>Confirme sua senha</Text>
-        <View style={styles.passwordContainer}>
+        <View style={styles.formContainer}>
+          <Text style={styles.inputLabel}>Nome completo</Text>
           <TextInput
-            style={styles.passwordInput}
-            placeholder="Confirme sua senha"
-            secureTextEntry={!confirmPasswordVisible}
-            value={confirmarSenha}
-            onChangeText={setConfirma}
+            style={styles.input}
+            placeholder="Digite seu nome completo"
+            value={nome}
+            onChangeText={setNome}
           />
-          <TouchableOpacity style={styles.eyeIcon} onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}>
-            <Icon name={confirmPasswordVisible ? 'eye-slash' : 'eye'} size={24} color="#0F334D" />
-          </TouchableOpacity>
+          <Text style={styles.inputLabel}>E-mail</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu e-mail"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <Text style={styles.inputLabel}>Telefone</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu telefone"
+            value={telefone}
+            onChangeText={setTelefone}
+          />
+          <Text style={styles.inputLabel}>Senha</Text>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Digite sua senha"
+              secureTextEntry={!passwordVisible}
+              value={senha}
+              onChangeText={setSenha}
+            />
+            <TouchableOpacity style={styles.eyeIcon} onPress={() => setPasswordVisible(!passwordVisible)}>
+              <Icon name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color="#0F334D" />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.inputLabel}>Confirme sua senha</Text>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Confirme sua senha"
+              secureTextEntry={!confirmPasswordVisible}
+              value={confirmarSenha}
+              onChangeText={setConfirma}
+            />
+            <TouchableOpacity style={styles.eyeIcon} onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}>
+              <Icon name={confirmPasswordVisible ? 'eye-slash' : 'eye'} size={24} color="#0F334D" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-      <TouchableOpacity style={[styles.button, styles.cadastrarButton]} onPress={handleCadastro}>
-        <Text style={[styles.buttonText, styles.cadastrarText]}>CADASTRAR-SE</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, styles.cadastrarButton]} onPress={handleCadastro}>
+          <Text style={[styles.buttonText, styles.cadastrarText]}>CADASTRAR-SE</Text>
+        </TouchableOpacity>
     </View>
   );
 };
@@ -121,6 +125,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
+  },
+  backButton: {
+    paddingTop: 20,
+    position: 'absolute',
+    top: 20,
+    left: 20,
   },
   logoContainer: {
     alignItems: 'center',

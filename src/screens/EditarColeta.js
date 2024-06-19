@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { API_URL } from '@env';
 
 const EditarColeta = () => {
   const navigation = useNavigation();
@@ -18,7 +19,7 @@ const EditarColeta = () => {
     const fetchColeta = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://192.168.43.200:5000/api/coleta/ObterColeta/${user.Cadastrarid}/${coletaId}`);
+        const response = await fetch(`${API_URL}/api/coleta/ObterColeta/${user.Cadastrarid}/${coletaId}`);
         if (response.ok) {
           const data = await response.json();
           setColeta(data);
@@ -43,7 +44,7 @@ const EditarColeta = () => {
 
     console.log('Dados enviados para edição:', coletaEditada);  // Adicionando log para verificar os dados
     try {
-      const response = await fetch(`http://192.168.43.200:5000/api/coleta/EditarColeta/${user.Cadastrarid}/${coletaId}`, {
+      const response = await fetch(`http://192.168.20.91:5000/api/coleta/EditarColeta/${user.Cadastrarid}/${coletaId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

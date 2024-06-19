@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { useAuth } from '../../AuthContext';
+import { API_URL } from '@env';
 
 const LoginUsuario = () => {
   const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ const LoginUsuario = () => {
 
     try {
       console.log('Sending request with:', { Email: email, Senha: senha });
-      const response = await axios.post('http://192.168.43.200:5000/api/auth/login', {
+      const response = await axios.post(`${API_URL}/api/auth/login`, {
         Email: email,
         Senha: senha,
       });
@@ -43,39 +44,39 @@ const LoginUsuario = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.logoContainer}>
-        <Image source={require('../assets/images/logo.png')} style={styles.logo} />
-        <Image source={require('../assets/images/nome.png')} style={styles.appName} />
-      </View>
-      <View style={styles.formContainer}>
-        <Text style={styles.inputLabel}>E-mail</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Digite seu e-mail"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-        <Text style={styles.inputLabel}>Senha</Text>
-        <View style={styles.passwordContainer}>
-          <TextInput
-            style={styles.passwordInput}
-            placeholder="Digite sua senha"
-            secureTextEntry={!passwordVisible}
-            value={senha}
-            onChangeText={(text) => setPassword(text)}
-          />
-          <TouchableOpacity style={styles.eyeIcon} onPress={() => setPasswordVisible(!passwordVisible)}>
-            <Icon name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color="#0F334D" />
-          </TouchableOpacity>
+        <View style={styles.logoContainer}>
+          <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+          <Image source={require('../assets/images/nome.png')} style={styles.appName} />
         </View>
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      </View>
-      <TouchableOpacity style={[styles.button, styles.entrarButton]} onPress={handleLogin}>
-        <Text style={[styles.buttonText, styles.entrarText]}>ENTRAR</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.forgotPasswordButton} onPress={() => navigation.navigate('EncontreConta')}>
-        <Text style={styles.forgotPasswordText}>Esqueceu sua senha?</Text>
-      </TouchableOpacity>
+        <View style={styles.formContainer}>
+          <Text style={styles.inputLabel}>E-mail</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu e-mail"
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+          />
+          <Text style={styles.inputLabel}>Senha</Text>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Digite sua senha"
+              secureTextEntry={!passwordVisible}
+              value={senha}
+              onChangeText={(text) => setPassword(text)}
+            />
+            <TouchableOpacity style={styles.eyeIcon} onPress={() => setPasswordVisible(!passwordVisible)}>
+              <Icon name={passwordVisible ? 'eye-slash' : 'eye'} size={24} color="#0F334D" />
+            </TouchableOpacity>
+          </View>
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        </View>
+        <TouchableOpacity style={[styles.button, styles.entrarButton]} onPress={handleLogin}>
+          <Text style={[styles.buttonText, styles.entrarText]}>ENTRAR</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.forgotPasswordButton} onPress={() => navigation.navigate('EncontreConta')}>
+          <Text style={styles.forgotPasswordText}>Esqueceu sua senha?</Text>
+        </TouchableOpacity>
     </View>
   );
 };

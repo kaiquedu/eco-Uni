@@ -27,17 +27,10 @@ const Login = () => {
     navigation.navigate('LoginUsuario');
   };
 
-  const handleCadastro = () => {
-    navigation.navigate('Cadastro');
-  };
-
   return (
     <View style={styles.container}>
       <Image source={require('../assets/images/logo.png')} style={styles.logo} />
       <Image source={require('../assets/images/nome.png')} style={styles.appName} />
-      <TouchableOpacity style={[styles.button, styles.cadastrarButton]} onPress={handleCadastro}>
-        <Text style={[styles.buttonText, styles.cadastrarText]}>CADASTRAR-SE</Text>
-      </TouchableOpacity>
       <TouchableOpacity style={[styles.button, styles.entrarButton]} onPress={handleLoginUsuario}>
         <Text style={[styles.buttonText, styles.entrarText]}>ENTRAR</Text>
       </TouchableOpacity>

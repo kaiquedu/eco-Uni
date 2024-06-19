@@ -5,6 +5,7 @@ import { useFonts, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
 import * as Animatable from 'react-native-animatable';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext';
+import { API_URL } from '@env';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -19,9 +20,9 @@ const HomeApp = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const endpoint = user.Email === 'kaiqueeduardo1407@gmail.com'
-        ? 'http://192.168.43.200:5000/api/coleta/ObterTodasColetas'
-        : `http://192.168.43.200:5000/api/coleta/ObterColetas/${user.Cadastrarid}`;
+      const endpoint = user.Email === 'admteste@gmail.com'
+        ? `${API_URL}/api/coleta/ObterTodasColetas`
+        : `${API_URL}/api/coleta/ObterColetas/${user.Cadastrarid}`;
       const response = await fetch(endpoint);
       if (response.ok) {
         const data = await response.json();

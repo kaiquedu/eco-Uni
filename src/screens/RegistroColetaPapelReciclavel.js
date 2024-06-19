@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useFonts, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext'; // Importe o contexto de autenticação
+import { API_URL } from '@env';
 
 const RegistroColetaPapelReciclavel = () => {
   const [saco, setSaco] = useState('');
@@ -38,7 +39,7 @@ const RegistroColetaPapelReciclavel = () => {
     };
 
     try {
-      const response = await fetch('http://192.168.43.200:5000/api/coleta/RegistrarColeta', {
+      const response = await fetch(`${API_URL}/api/coleta/RegistrarColeta`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
