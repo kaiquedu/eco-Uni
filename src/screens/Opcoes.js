@@ -57,7 +57,7 @@ const Opcoes = () => {
           </View>
           <Icon name="chevron-right" size={16} color="#0F334D" />
         </TouchableOpacity>
-        {user && user.Email === 'kaiqueeduardo1407@gmail.com' && (
+        {user && user.Email === 'admteste@gmail.com' && (
           <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Cadastro')}>
             <Text style={styles.optionText}>Cadastrar novo usuário</Text>
             <Icon name="chevron-right" size={16} color="#0F334D" />

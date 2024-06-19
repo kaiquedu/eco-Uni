@@ -118,7 +118,7 @@ const Historico = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      {selectedColeta && user.Email !== 'kaiqueeduardo1407@gmail.com' && (
+      {selectedColeta && user.Email !== 'admteste@gmail.com' && (
         <View style={styles.actionButtons}>
           <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(selectedColeta)}>
             <Text style={styles.buttonText}>Editar</Text>
