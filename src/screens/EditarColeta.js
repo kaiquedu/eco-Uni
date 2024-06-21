@@ -42,9 +42,9 @@ const EditarColeta = () => {
       Quantidade: parseInt(coleta.Quantidade, 10),
     };
 
-    console.log('Dados enviados para edição:', coletaEditada);  // Adicionando log para verificar os dados
+    console.log('Dados enviados para edição:', coletaEditada);  
     try {
-      const response = await fetch(`http://192.168.20.91:5000/api/coleta/EditarColeta/${user.Cadastrarid}/${coletaId}`, {
+      const response = await fetch(`${API_URL}/api/coleta/EditarColeta/${user.Cadastrarid}/${coletaId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ const EditarColeta = () => {
         style={styles.picker}
         onValueChange={(itemValue) => setColeta({ ...coleta, TipoResiduo: itemValue })}
       >
-        <Picker.Item label="MAterial Reciclável" value="Material Reciclável" />
+        <Picker.Item label="Material Reciclável" value="Material Reciclável" />
         <Picker.Item label="Material Não Reciclável" value="Material Não Reciclável" />
         <Picker.Item label="Papel Reciclável" value="Papel Reciclável" />
       </Picker>

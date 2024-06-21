@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
-import email from 'react-native-email'; // Importe a biblioteca de e-mail
+import email from 'react-native-email'; 
 
 const Contato = () => {
   const [subject, setSubject] = useState('');
@@ -14,7 +14,7 @@ const Contato = () => {
 
   const handleSend = () => {
     if (messageLength > 0 && messageLength <= 1000) {
-      const to = ['suporteecouni@gmail.com']; // Endereço de e-mail fixo
+      const to = ['suporteecouni@gmail.com']; 
       email(to, {
         subject: subject,
         body: message,

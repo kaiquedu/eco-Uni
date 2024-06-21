@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "eco-Uni",
+    "name": "EcoUni",
     "slug": "eco-Uni",
-    "version": "1.0.1",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/favicon.png",
     "userInterfaceStyle": "light",
@@ -19,16 +19,16 @@
       "bundleIdentifier": "com.unifaat.ecouni"
     },
     "android": {
-      "versionCode": 2,
+      "versionCode": 6,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/favicon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.unifaat.ecouni",
       "permissions": [
-        "INTERNET"
-      ]
-
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ],
+      "package": "com.unifaat.ecouni"
     },
     "web": {
       "favicon": "./assets/favicon.png"

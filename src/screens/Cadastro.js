@@ -22,7 +22,7 @@ const Cadastro = () => {
 
   const handleCadastro = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/auth/login`, {
+      const response = await fetch(`${API_URL}/api/auth/registro`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ const Cadastro = () => {
 
       if (response.ok) {
         Alert.alert('Sucesso', 'Cadastro realizado com sucesso.');
-        navigation.navigate('Login');
+        navigation.navigate('Opcoes');
       } else {
         Alert.alert('Erro', data.message || 'Ocorreu um erro durante o cadastro.');
       }

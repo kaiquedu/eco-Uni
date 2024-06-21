@@ -6,13 +6,12 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext';
 import { useColeta } from '../../ColetaContext';
 import { API_URL } from '@env';
-
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
+import Config from '../../config.js';
 
 const Historico = () => {
   const navigation = useNavigation();
   const { user } = useAuth();
+  const { email } = Config;
   const { selectedColeta, selectColeta, clearColeta } = useColeta();
   const [coletas, setColetas] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -21,7 +20,7 @@ const Historico = () => {
     setLoading(true);
     try {
       let endpoint;
-      if (user.Email === 'admteste@gmail.com') {
+      if (user.Email === email) {
         endpoint = `${API_URL}/api/coleta/ObterTodasColetas`;
       } else {
         endpoint = `${API_URL}/api/coleta/ObterColetas/${user.Cadastrarid}`;
@@ -52,7 +51,7 @@ const Historico = () => {
 
   const [fontsLoaded] = useFonts({ Montserrat_700Bold });
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || loading) {
     return null;
   }
 
@@ -118,7 +117,7 @@ const Historico = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      {selectedColeta && user.Email !== 'admteste@gmail.com' && (
+      {selectedColeta && user.Email !== email && (
         <View style={styles.actionButtons}>
           <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(selectedColeta)}>
             <Text style={styles.buttonText}>Editar</Text>
@@ -146,8 +145,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center', // Centraliza o texto do cabeçalho horizontalmente
-    marginBottom: 20, // Adiciona margem inferior para mover o cabeçalho um pouco mais para baixo
+    justifyContent: 'center',
+    marginBottom: 20, 
   },
   backButton: {
     position: 'absolute',

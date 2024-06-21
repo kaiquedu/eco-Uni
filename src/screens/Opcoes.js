@@ -3,30 +3,30 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../../AuthContext'; // ajuste o caminho conforme necessário
+import { useAuth } from '../../AuthContext'; 
+import Config from '../../config.js';
 
 const Opcoes = () => {
   const navigation = useNavigation();
-  const { logout, user } = useAuth(); // Acessa o `user` do contexto de autenticação
-
+  const { logout, user } = useAuth();
+  const { email } = Config;
   const [fontsLoaded] = useFonts({ Montserrat_700Bold, Montserrat_400Regular });
 
   if (!fontsLoaded) {
     return null;
   }
 
-  console.log("Valor de user:", user); // Adiciona um log para verificar o valor de user
+  console.log("Valor de user:", user); 
 
   const handleBack = () => {
-    navigation.goBack(); // Função para retornar à tela anterior
+    navigation.goBack(); 
   };
 
   const handleLogout = () => {
     logout();
-    navigation.replace('Login'); // Redireciona para a tela de login
+    navigation.replace('Login');
   };
 
-  // Adiciona um log para verificar o valor de user.Email
   console.log("Valor de user.Email:", user ? user.Email : "usuário não logado");
 
   return (
@@ -57,7 +57,7 @@ const Opcoes = () => {
           </View>
           <Icon name="chevron-right" size={16} color="#0F334D" />
         </TouchableOpacity>
-        {user && user.Email === 'admteste@gmail.com' && (
+        {user && user.Email === email && (
           <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Cadastro')}>
             <Text style={styles.optionText}>Cadastrar novo usuário</Text>
             <Icon name="chevron-right" size={16} color="#0F334D" />

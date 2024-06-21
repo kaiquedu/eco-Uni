@@ -3,7 +3,7 @@ import { View, Text, TextInput, Modal, StyleSheet, TouchableOpacity } from 'reac
 import { Picker } from '@react-native-picker/picker';
 import { useFonts, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../../AuthContext'; // Importe o contexto de autenticação
+import { useAuth } from '../../AuthContext'; 
 import { API_URL } from '@env';
 
 const RegistroColetaPapelReciclavel = () => {
@@ -13,7 +13,7 @@ const RegistroColetaPapelReciclavel = () => {
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const navigation = useNavigation();
-  const { user } = useAuth(); // Use o contexto de autenticação para obter o usuário
+  const { user } = useAuth();
   const [fontsLoaded] = useFonts({
     Montserrat_700Bold,
     Montserrat_400Regular,
@@ -35,7 +35,7 @@ const RegistroColetaPapelReciclavel = () => {
       Quantidade: parseInt(quantidade, 10),
       Observacoes: observacoes,
       DataRegistro: new Date().toISOString(),
-      Cadastrarid: user.Cadastrarid // Use o Cadastrarid do usuário
+      Cadastrarid: user.Cadastrarid 
     };
 
     try {
@@ -70,7 +70,6 @@ const RegistroColetaPapelReciclavel = () => {
         <Picker.Item label="Selecione a opção" value="" />
         <Picker.Item label="1L" value="1" />
         <Picker.Item label="10L" value="10" />
-        {/* Adicione outros valores conforme necessário */}
       </Picker>
       <Text style={styles.label}>Quantidade *</Text>
       <Picker

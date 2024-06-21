@@ -6,13 +6,14 @@ import * as Animatable from 'react-native-animatable';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext';
 import { API_URL } from '@env';
+import Config from '../../config.js';
 
-const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const HomeApp = () => {
   const navigation = useNavigation();
   const { user } = useAuth();
+  const { email } = Config;
   const [coletas, setColetas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showAdditionalIcons, setShowAdditionalIcons] = useState(false);
@@ -20,7 +21,7 @@ const HomeApp = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const endpoint = user.Email === 'admteste@gmail.com'
+      const endpoint = user.Email === email
         ? `${API_URL}/api/coleta/ObterTodasColetas`
         : `${API_URL}/api/coleta/ObterColetas/${user.Cadastrarid}`;
       const response = await fetch(endpoint);

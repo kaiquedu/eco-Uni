@@ -8,10 +8,12 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Checkbox from 'expo-checkbox';
 import { useAuth } from '../../AuthContext';
 import { API_URL } from '@env';
+import Config from '../../config.js';
 
 const Relatorios = () => {
   const navigation = useNavigation();
   const { user } = useAuth();
+  const { email } = Config;
   const [fontsLoaded] = useFonts({ Montserrat_700Bold });
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('');
@@ -26,7 +28,7 @@ const Relatorios = () => {
   const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
-    if (user.Email !== 'admteste@gmail.com') {
+    if (user.Email !== email) {
       Alert.alert('Acesso Restrito', 'Seu perfil não possui acesso para este serviço. Entre em contato com o seu administrador para qualquer dúvida.');
       navigation.goBack();
       return;
@@ -34,7 +36,7 @@ const Relatorios = () => {
   
     const fetchData = async () => {
       try {
-        const endpoint = user.Email === 'admteste@gmail.com'
+        const endpoint = user.Email === email
           ? `${API_URL}/api/coleta/ObterTodasColetas`
           : `${API_URL}/api/coleta/ObterColetas/${user.Cadastrarid}`;
   

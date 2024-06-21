@@ -39,7 +39,6 @@ const Perfil = () => {
     } catch (error) {
       setLoading(false);
       console.error('Erro ao buscar dados do usuário:', error);
-      // Tratar erros adequadamente
     }
   };
 
@@ -60,17 +59,11 @@ const Perfil = () => {
       console.log('Perfil atualizado com sucesso!');
       setLoading(false);
       Alert.alert('Sucesso', 'Perfil atualizado com sucesso');
-      // Atualizar os dados do usuário localmente após a atualização
       updateUser({ ...user, Nome: nome, Telefone: telefone, Email: email });
     } catch (error) {
       setLoading(false);
       console.error('Erro ao atualizar perfil:', error);
-      // Tratar erros adequadamente
     }
-  };
-
-  const handleBack = () => {
-    navigation.goBack();
   };
 
   const handleCancel = () => {

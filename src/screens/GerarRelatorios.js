@@ -1,13 +1,12 @@
-import React, { useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Modal, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 import jsPDF from 'jspdf';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import { Asset } from 'expo-asset';
-import { captureRef } from 'react-native-view-shot';
+import React, { useRef, useState, useEffect } from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const GerarRelatorios = () => {
   const navigation = useNavigation();
@@ -20,6 +19,29 @@ const GerarRelatorios = () => {
   const handleBack = () => {
     navigation.goBack();
   };
+
+  const [mediaLibraryPermission, setMediaLibraryPermission] = useState(null);
+
+  useEffect(() => {
+    const getPermission = async () => {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      setMediaLibraryPermission(status === 'granted');
+    };
+
+    getPermission();
+  }, []);
+
+  if (mediaLibraryPermission === null) {
+    return null; 
+  }
+
+  if (!mediaLibraryPermission) {
+    return (
+      <View style={styles.container}>
+        <Text>Você precisa permitir acesso à biblioteca de mídia para gerar o PDF.</Text>
+      </View>
+    );
+  }
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
